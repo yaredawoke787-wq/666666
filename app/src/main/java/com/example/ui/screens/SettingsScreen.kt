@@ -29,11 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.theme.*
 import com.example.ui.viewmodel.GiftViewModel
+import com.example.ui.localization.TekeLocalization
 
 @Composable
 fun SettingsScreen(viewModel: GiftViewModel) {
     val context = LocalContext.current
     val isDarkThemeEnabled by viewModel.isDarkTheme.collectAsState()
+    val currentLanguage by viewModel.currentLanguage.collectAsState()
 
     Box(
         modifier = Modifier
@@ -61,7 +63,7 @@ fun SettingsScreen(viewModel: GiftViewModel) {
 
             // Brand Header
             Text(
-                text = "BOUTIQUE SETTINGS",
+                text = TekeLocalization.getString("boutique_settings", currentLanguage),
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
@@ -71,7 +73,7 @@ fun SettingsScreen(viewModel: GiftViewModel) {
             Spacer(modifier = Modifier.height(6.dp))
             
             Text(
-                text = "Preferences & Heritage",
+                text = if (currentLanguage == "AM") "ምርጫዎች እና ቅርስ" else "Preferences & Heritage",
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -101,7 +103,7 @@ fun SettingsScreen(viewModel: GiftViewModel) {
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
-                        text = "THE HERITAGE OF TEKE MAN",
+                        text = TekeLocalization.getString("exclusive_studio", currentLanguage),
                         color = MaterialTheme.colorScheme.primary,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
@@ -109,7 +111,7 @@ fun SettingsScreen(viewModel: GiftViewModel) {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Teke Man Promotion is Ethiopia's premier brand curation house, redefining luxury gifts for birthdays, high-profile weddings, corporate functions, and graduations. We handcraft bespoke cases lined with precious silk and custom engravings, transforming traditional gifting into a lifetime of cherished emotions.",
+                        text = TekeLocalization.getString("brand_desc", currentLanguage),
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
                         fontSize = 13.sp,
                         lineHeight = 20.sp,
@@ -122,7 +124,7 @@ fun SettingsScreen(viewModel: GiftViewModel) {
 
             // --- PREFERENCES SECTION ---
             Text(
-                text = "SYSTEM SETTINGS",
+                text = TekeLocalization.getString("system_settings", currentLanguage),
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
@@ -130,22 +132,43 @@ fun SettingsScreen(viewModel: GiftViewModel) {
                 modifier = Modifier.padding(bottom = 10.dp)
             )
 
-            // Dark Mode toggle list item
+            // Language picker item
             SettingsListItem(
-                title = "Bespoke Dark Mode",
-                subtitle = "Locked to Onyx: Optimized for OLED displays",
-                icon = Icons.Default.DarkMode,
+                title = TekeLocalization.getString("language_setting", currentLanguage),
+                subtitle = TekeLocalization.getString("language_setting_desc", currentLanguage),
+                icon = Icons.Default.Translate,
                 isDarkTheme = isDarkThemeEnabled,
                 trailingContent = {
-                    Switch(
-                        checked = true,
-                        onCheckedChange = { /* Permanently active in boutique mode */ },
-                        enabled = false,
-                        colors = SwitchDefaults.colors(
-                            disabledCheckedThumbColor = SoftBlack,
-                            disabledCheckedTrackColor = GoldAccent
-                        )
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        TextButton(
+                            onClick = { viewModel.setLanguage("EN") },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                            modifier = Modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
+                        ) {
+                            Text(
+                                text = "EN",
+                                color = if (currentLanguage == "EN") GoldAccent else Color.Gray,
+                                fontWeight = if (currentLanguage == "EN") FontWeight.Bold else FontWeight.Normal,
+                                fontSize = 12.sp
+                            )
+                        }
+                        Text("/", color = Color.Gray.copy(alpha = 0.4f), fontSize = 12.sp)
+                        TextButton(
+                            onClick = { viewModel.setLanguage("AM") },
+                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                            modifier = Modifier.defaultMinSize(minWidth = 1.dp, minHeight = 1.dp)
+                        ) {
+                            Text(
+                                text = "አማርኛ",
+                                color = if (currentLanguage == "AM") GoldAccent else Color.Gray,
+                                fontWeight = if (currentLanguage == "AM") FontWeight.Bold else FontWeight.Normal,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
                 }
             )
 
@@ -153,8 +176,8 @@ fun SettingsScreen(viewModel: GiftViewModel) {
 
             // Share App
             SettingsListItem(
-                title = "Share Boutique",
-                subtitle = "Recommend Teke Man to friends & colleagues",
+                title = TekeLocalization.getString("share_boutique", currentLanguage),
+                subtitle = TekeLocalization.getString("share_boutique_desc", currentLanguage),
                 icon = Icons.Default.Share,
                 isDarkTheme = isDarkThemeEnabled,
                 onClick = {
@@ -172,8 +195,8 @@ fun SettingsScreen(viewModel: GiftViewModel) {
 
             // Rate App
             SettingsListItem(
-                title = "Rate Boutique",
-                subtitle = "Leave us direct feedback",
+                title = TekeLocalization.getString("rate_boutique", currentLanguage),
+                subtitle = TekeLocalization.getString("rate_boutique_desc", currentLanguage),
                 icon = Icons.Default.Star,
                 isDarkTheme = isDarkThemeEnabled,
                 onClick = {
@@ -186,7 +209,7 @@ fun SettingsScreen(viewModel: GiftViewModel) {
 
             // Version Indicator
             Text(
-                text = "TEKE MAN PROMOTION V1.0.0\nCrafted with handselected materials in Addis Ababa",
+                text = TekeLocalization.getString("footer_text", currentLanguage),
                 color = WarmGray,
                 fontSize = 10.sp,
                 textAlign = TextAlign.Center,

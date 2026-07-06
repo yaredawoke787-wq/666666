@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,7 +52,8 @@ fun HomeScreen(
     viewModel: GiftViewModel,
     onProductClick: (Int) -> Unit,
     onNavigateToFavorites: () -> Unit,
-    onNavigateToCart: () -> Unit
+    onNavigateToCart: () -> Unit,
+    onNavigateToOnboarding: () -> Unit
 ) {
     val context = LocalContext.current
     val products by viewModel.filteredProducts.collectAsState()
@@ -59,9 +61,19 @@ fun HomeScreen(
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val cartProducts by viewModel.cartProducts.collectAsState()
+    val currentLanguage by viewModel.currentLanguage.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
-    val categories = listOf("✨ All Gifts", "Boxes", "Corporate", "Weddings", "Graduations", "Birthdays")
+    var showBrandDialog by remember { mutableStateOf(false) }
+
+    val categories = listOf(
+        com.example.ui.localization.TekeLocalization.getString("cat_all", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_watch", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_chocolate", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_shine_board", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_photo_glob", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_mag", currentLanguage)
+    )
 
     // Determine Greeting based on current local time
     val greeting = remember {
@@ -76,6 +88,87 @@ fun HomeScreen(
     val background = MaterialTheme.colorScheme.background
     val isDarkTheme = remember(background) {
         with(background) { (red * 0.299f + green * 0.587f + blue * 0.114f) <= 0.5f }
+    }
+
+    if (showBrandDialog) {
+        AlertDialog(
+            onDismissRequest = { showBrandDialog = false },
+            confirmButton = {
+                TextButton(
+                    onClick = { showBrandDialog = false }
+                ) {
+                    Text(
+                        text = com.example.ui.localization.TekeLocalization.getString("close", currentLanguage),
+                        color = Color(0xFFF2B705)
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showBrandDialog = false
+                        onNavigateToOnboarding()
+                    }
+                ) {
+                    Text(
+                        text = com.example.ui.localization.TekeLocalization.getString("re_onboarding", currentLanguage),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(42.dp)
+                            .border(1.dp, Color(0xFFF2B705), CircleShape)
+                            .clip(CircleShape)
+                            .background(if (isDarkTheme) Color(0xFF16161A) else Color.White)
+                            .padding(4.dp)
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("https://res.cloudinary.com/dnmgvjg3h/image/upload/v1783010583/IMG_20260702_192242_814_absnox.png")
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Teke Man Logo",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = com.example.ui.localization.TekeLocalization.getString("teke_man", currentLanguage).trim(),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Serif
+                        )
+                        Text(
+                            text = com.example.ui.localization.TekeLocalization.getString("premier_studio", currentLanguage),
+                            color = Color(0xFFF2B705),
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            },
+            text = {
+                Text(
+                    text = com.example.ui.localization.TekeLocalization.getString("brand_desc", currentLanguage),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 13.sp,
+                    lineHeight = 20.sp,
+                    textAlign = TextAlign.Justify
+                )
+            },
+            shape = RoundedCornerShape(24.dp),
+            containerColor = if (isDarkTheme) Color(0xFF222228) else Color.White,
+            tonalElevation = 6.dp
+        )
     }
 
     Box(
@@ -106,54 +199,49 @@ fun HomeScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                    .padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
-                    Text(
-                        text = "EXCLUSIVE GIFT STUDIO",
-                        color = Color(0xFFF2B705),
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 2.sp
-                    )
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Row(verticalAlignment = Alignment.Bottom) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .clickable { showBrandDialog = true }
+                            .padding(vertical = 4.dp)
+                    ) {
                         Text(
-                            text = "Teke Man ",
-                            color = Color.White,
-                            fontSize = 28.sp,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Serif
-                        )
-                        Text(
-                            text = "Promotion",
+                            text = com.example.ui.localization.TekeLocalization.getString("exclusive_studio", currentLanguage),
                             color = Color(0xFFF2B705),
-                            fontSize = 28.sp,
+                            fontSize = 9.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Serif,
-                            fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                            letterSpacing = 2.sp
                         )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Row(verticalAlignment = Alignment.Bottom) {
+                            Text(
+                                text = com.example.ui.localization.TekeLocalization.getString("teke_man", currentLanguage),
+                                color = if (isDarkTheme) Color.White else Color(0xFF16161A),
+                                fontSize = 21.6.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Serif
+                            )
+                            Text(
+                                text = com.example.ui.localization.TekeLocalization.getString("promotion", currentLanguage),
+                                color = Color(0xFFF2B705),
+                                fontSize = 21.6.sp,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Serif,
+                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                            )
+                        }
                     }
                 }
 
                 // Header Action Buttons + Circular gold-outlined profile logo with soft inner glow
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        onClick = onNavigateToFavorites,
-                        modifier = Modifier
-                            .background(if (isDarkTheme) Color.White.copy(alpha = 0.05f) else SleekLightGray, CircleShape)
-                            .size(38.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.FavoriteBorder,
-                            contentDescription = "Favorites",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(6.dp))
                     Box {
                         IconButton(
                             onClick = onNavigateToCart,
@@ -227,8 +315,8 @@ fun HomeScreen(
                             onValueChange = { viewModel.setSearchQuery(it) },
                             modifier = Modifier
                                 .weight(1f)
-                                .height(56.dp)
-                                .clip(RoundedCornerShape(28.dp))
+                                .height(50.dp)
+                                .clip(RoundedCornerShape(25.dp))
                                 .background(if (isDarkTheme) PremiumGray.copy(alpha = 0.6f) else SleekLightGray),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.Transparent,
@@ -240,7 +328,7 @@ fun HomeScreen(
                             ),
                             placeholder = {
                                 Text(
-                                    "Search exclusive gifts...",
+                                    com.example.ui.localization.TekeLocalization.getString("search_hint", currentLanguage),
                                     color = WarmGray,
                                     fontSize = 14.sp
                                 )
@@ -264,7 +352,7 @@ fun HomeScreen(
                                 }
                             },
                             singleLine = true,
-                            shape = RoundedCornerShape(28.dp)
+                            shape = RoundedCornerShape(25.dp)
                         )
                         
                         Spacer(modifier = Modifier.width(10.dp))
@@ -275,7 +363,7 @@ fun HomeScreen(
                                 // Simulated premium voice recognition or direct microphone intent if needed
                             },
                             modifier = Modifier
-                                .size(56.dp)
+                                .size(50.dp)
                                 .background(if (isDarkTheme) PremiumGray.copy(alpha = 0.6f) else SleekLightGray, CircleShape)
                                 .border(1.dp, if (isDarkTheme) Color.White.copy(alpha = 0.1f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f), CircleShape)
                         ) {
@@ -326,7 +414,7 @@ fun HomeScreen(
                                     state = pagerState,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(250.dp),
+                                        .height(212.dp),
                                     contentPadding = PaddingValues(0.dp),
                                     pageSpacing = 0.dp
                                 ) { page ->
@@ -488,7 +576,7 @@ fun HomeScreen(
                 item {
                     Column(modifier = Modifier.padding(vertical = 12.dp)) {
                         Text(
-                            text = "CATEGORIES",
+                            text = if (currentLanguage == "AM") "ምድቦች" else "CATEGORIES",
                             color = GoldAccent,
                             fontSize = 11.sp,
                             fontWeight = FontWeight.SemiBold,
@@ -501,12 +589,16 @@ fun HomeScreen(
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             items(categories) { category ->
-                                val active = (selectedCategory == "All" && category == "✨ All Gifts") ||
-                                             (selectedCategory == "Luxury" && category == "Boxes") ||
-                                             (selectedCategory == "Business" && category == "Corporate") ||
-                                             (selectedCategory == "Wedding" && category == "Weddings") ||
-                                             (selectedCategory == "Graduation" && category == "Graduations") ||
-                                             (selectedCategory == "Birthday" && category == "Birthdays")
+                                val categoryIndex = categories.indexOf(category)
+                                val active = when (categoryIndex) {
+                                    0 -> selectedCategory == "All"
+                                    1 -> selectedCategory == "Luxury"
+                                    2 -> selectedCategory == "Business"
+                                    3 -> selectedCategory == "Wedding"
+                                    4 -> selectedCategory == "Graduation"
+                                    5 -> selectedCategory == "Birthday"
+                                    else -> false
+                                }
 
                                 val bgColor = if (active) Color(0xFF2A2000) else Color(0xFF16161A)
                                 val borderModifier = if (active) {
@@ -522,13 +614,13 @@ fun HomeScreen(
                                         .background(bgColor)
                                         .then(borderModifier)
                                         .clickable {
-                                            val targetCategory = when (category) {
-                                                "✨ All Gifts" -> "All"
-                                                "Boxes" -> "Luxury"
-                                                "Corporate" -> "Business"
-                                                "Weddings" -> "Wedding"
-                                                "Graduations" -> "Graduation"
-                                                "Birthdays" -> "Birthday"
+                                            val targetCategory = when (categoryIndex) {
+                                                0 -> "All"
+                                                1 -> "Luxury"
+                                                2 -> "Business"
+                                                3 -> "Wedding"
+                                                4 -> "Graduation"
+                                                5 -> "Birthday"
                                                 else -> "All"
                                             }
                                             viewModel.selectCategory(targetCategory)

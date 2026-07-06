@@ -32,6 +32,8 @@ import com.example.ui.theme.CardBorderColor
 import com.example.ui.theme.GoldAccent
 import com.example.ui.theme.SoftBlack
 
+import com.example.ui.localization.TekeLocalization
+
 sealed class Screen(val route: String, val label: String, val activeIcon: ImageVector, val inactiveIcon: ImageVector) {
     object Home : Screen("home", "Home", Icons.Filled.Home, Icons.Outlined.Home)
     object Contact : Screen("contact", "Categories", Icons.Filled.GridView, Icons.Outlined.GridView)
@@ -43,6 +45,7 @@ sealed class Screen(val route: String, val label: String, val activeIcon: ImageV
 @Composable
 fun PremiumBottomBar(
     currentRoute: String,
+    currentLanguage: String,
     onNavigate: (String) -> Unit
 ) {
     val items = listOf(
@@ -72,6 +75,16 @@ fun PremiumBottomBar(
         ) {
             items.forEach { screen ->
                 val selected = currentRoute == screen.route
+                val localizedLabel = remember(screen.route, currentLanguage) {
+                    when (screen.route) {
+                        "home" -> TekeLocalization.getString("tab_home", currentLanguage)
+                        "contact" -> TekeLocalization.getString("tab_categories", currentLanguage)
+                        "favorites" -> TekeLocalization.getString("tab_favorites", currentLanguage)
+                        "cart" -> TekeLocalization.getString("tab_bag", currentLanguage)
+                        "settings" -> TekeLocalization.getString("tab_premium", currentLanguage)
+                        else -> screen.label
+                    }
+                }
                 
                 // Elastic physical springs for scale reactions
                 val scale by animateFloatAsState(
@@ -112,7 +125,7 @@ fun PremiumBottomBar(
                     ) {
                         Icon(
                             imageVector = if (selected) screen.activeIcon else screen.inactiveIcon,
-                            contentDescription = screen.label,
+                            contentDescription = localizedLabel,
                             tint = tintColor,
                             modifier = Modifier
                                 .scale(scale)
@@ -140,7 +153,7 @@ fun PremiumBottomBar(
                     Spacer(modifier = Modifier.height(1.dp))
                     
                     Text(
-                        text = screen.label,
+                        text = localizedLabel,
                         color = tintColor,
                         fontSize = 8.sp,
                         fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,

@@ -74,6 +74,13 @@ class GiftViewModel(private val repository: GiftRepository) : ViewModel() {
     private val _isDarkTheme = MutableStateFlow(true)
     val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
 
+    private val _currentLanguage = MutableStateFlow("EN")
+    val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
+
+    fun setLanguage(lang: String) {
+        _currentLanguage.value = lang
+    }
+
     fun setDarkTheme(enabled: Boolean) {
         _isDarkTheme.value = enabled
     }

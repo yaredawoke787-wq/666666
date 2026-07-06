@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+            val currentLanguage by viewModel.currentLanguage.collectAsState()
             MyApplicationTheme(darkTheme = isDarkTheme) {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
                         if (showBottomBar) {
                             PremiumBottomBar(
                                 currentRoute = currentRoute,
+                                currentLanguage = currentLanguage,
                                 onNavigate = { route ->
                                     navController.navigate(route) {
                                         // Avoid building duplicate task stacks on rapid selection
@@ -105,6 +107,13 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onNavigateToCart = {
                                     navController.navigate("cart")
+                                },
+                                onNavigateToOnboarding = {
+                                    val sharedPrefs = this@MainActivity.getSharedPreferences("teke_prefs", android.content.Context.MODE_PRIVATE)
+                                    sharedPrefs.edit().putBoolean("onboarding_completed", false).apply()
+                                    navController.navigate("onboarding") {
+                                        popUpTo("home") { inclusive = true }
+                                    }
                                 }
                             )
                         }

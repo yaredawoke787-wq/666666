@@ -52,10 +52,18 @@ fun ContactScreen(
     val products by viewModel.filteredProducts.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val cartProducts by viewModel.cartProducts.collectAsState()
+    val currentLanguage by viewModel.currentLanguage.collectAsState()
     val isDarkTheme = true
     val coroutineScope = rememberCoroutineScope()
 
-    val categories = listOf("✨ All Gifts", "Boxes", "Corporate", "Weddings", "Graduations", "Birthdays")
+    val categories = listOf(
+        com.example.ui.localization.TekeLocalization.getString("cat_all", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_watch", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_chocolate", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_shine_board", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_photo_glob", currentLanguage),
+        com.example.ui.localization.TekeLocalization.getString("cat_mag", currentLanguage)
+    )
 
     Box(
         modifier = Modifier
@@ -122,12 +130,16 @@ fun ContactScreen(
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(categories) { category ->
-                            val active = (selectedCategory == "All" && category == "✨ All Gifts") ||
-                                         (selectedCategory == "Luxury" && category == "Boxes") ||
-                                         (selectedCategory == "Business" && category == "Corporate") ||
-                                         (selectedCategory == "Wedding" && category == "Weddings") ||
-                                         (selectedCategory == "Graduation" && category == "Graduations") ||
-                                         (selectedCategory == "Birthday" && category == "Birthdays")
+                            val categoryIndex = categories.indexOf(category)
+                            val active = when (categoryIndex) {
+                                0 -> selectedCategory == "All"
+                                1 -> selectedCategory == "Luxury"
+                                2 -> selectedCategory == "Business"
+                                3 -> selectedCategory == "Wedding"
+                                4 -> selectedCategory == "Graduation"
+                                5 -> selectedCategory == "Birthday"
+                                else -> false
+                            }
 
                             val bgColor = if (active) Color(0xFF2A2000) else Color(0xFF16161A)
                             val borderModifier = if (active) {
@@ -143,13 +155,13 @@ fun ContactScreen(
                                     .background(bgColor)
                                     .then(borderModifier)
                                     .clickable {
-                                        val targetCategory = when (category) {
-                                            "✨ All Gifts" -> "All"
-                                            "Boxes" -> "Luxury"
-                                            "Corporate" -> "Business"
-                                            "Weddings" -> "Wedding"
-                                            "Graduations" -> "Graduation"
-                                            "Birthdays" -> "Birthday"
+                                        val targetCategory = when (categoryIndex) {
+                                            0 -> "All"
+                                            1 -> "Luxury"
+                                            2 -> "Business"
+                                            3 -> "Wedding"
+                                            4 -> "Graduation"
+                                            5 -> "Birthday"
                                             else -> "All"
                                         }
                                         viewModel.selectCategory(targetCategory)
