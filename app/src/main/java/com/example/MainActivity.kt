@@ -74,10 +74,24 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable("splash") {
                             SplashScreen(onSplashComplete = {
-                                navController.navigate("home") {
+                                val sharedPrefs = this@MainActivity.getSharedPreferences("teke_prefs", android.content.Context.MODE_PRIVATE)
+                                val completed = sharedPrefs.getBoolean("onboarding_completed", false)
+                                val startRoute = if (completed) "home" else "onboarding"
+                                navController.navigate(startRoute) {
                                     popUpTo("splash") { inclusive = true }
                                 }
                             })
+                        }
+                        
+                        composable("onboarding") {
+                            OnboardingScreen(
+                                viewModel = viewModel,
+                                onOnboardingComplete = {
+                                    navController.navigate("home") {
+                                        popUpTo("onboarding") { inclusive = true }
+                                    }
+                                }
+                            )
                         }
                         
                         composable("home") {
@@ -121,7 +135,12 @@ class MainActivity : ComponentActivity() {
                         }
                         
                         composable("contact") {
-                            ContactScreen()
+                            ContactScreen(
+                                viewModel = viewModel,
+                                onProductClick = { productId ->
+                                    navController.navigate("product_details/$productId")
+                                }
+                            )
                         }
                         
                         composable("settings") {

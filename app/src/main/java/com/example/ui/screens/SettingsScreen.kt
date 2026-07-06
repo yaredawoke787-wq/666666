@@ -133,18 +133,17 @@ fun SettingsScreen(viewModel: GiftViewModel) {
             // Dark Mode toggle list item
             SettingsListItem(
                 title = "Bespoke Dark Mode",
-                subtitle = "Optimized for OLED displays & luxury blacks",
+                subtitle = "Locked to Onyx: Optimized for OLED displays",
                 icon = Icons.Default.DarkMode,
                 isDarkTheme = isDarkThemeEnabled,
                 trailingContent = {
                     Switch(
-                        checked = isDarkThemeEnabled,
-                        onCheckedChange = { viewModel.setDarkTheme(it) },
+                        checked = true,
+                        onCheckedChange = { /* Permanently active in boutique mode */ },
+                        enabled = false,
                         colors = SwitchDefaults.colors(
-                            checkedThumbColor = SoftBlack,
-                            checkedTrackColor = GoldAccent,
-                            uncheckedThumbColor = WarmGray,
-                            uncheckedTrackColor = SleekLightGray
+                            disabledCheckedThumbColor = SoftBlack,
+                            disabledCheckedTrackColor = GoldAccent
                         )
                     )
                 }

@@ -59,10 +59,7 @@ fun CartScreen(viewModel: GiftViewModel) {
     val deliveryFee = if (subtotal > 0) 250.0 else 0.0
     val totalAmount = subtotal + deliveryFee
 
-    val background = MaterialTheme.colorScheme.background
-    val isDarkTheme = remember(background) {
-        with(background) { (red * 0.299f + green * 0.587f + blue * 0.114f) <= 0.5f }
-    }
+    val isDarkTheme = true
 
     Box(
         modifier = Modifier
@@ -271,10 +268,7 @@ fun CartItemRow(
     onDecrease: () -> Unit,
     onRemove: () -> Unit
 ) {
-    val background = MaterialTheme.colorScheme.background
-    val isDarkTheme = remember(background) {
-        with(background) { (red * 0.299f + green * 0.587f + blue * 0.114f) <= 0.5f }
-    }
+    val isDarkTheme = true
 
     Card(
         modifier = Modifier

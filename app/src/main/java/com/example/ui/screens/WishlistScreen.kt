@@ -32,7 +32,7 @@ fun WishlistScreen(
 ) {
     val favorites by viewModel.favoriteProducts.collectAsState()
     val background = MaterialTheme.colorScheme.background
-    val isDarkTheme = with(background) { (red * 0.299f + green * 0.587f + blue * 0.114f) <= 0.5f }
+    val isDarkTheme = true
 
     Box(
         modifier = Modifier

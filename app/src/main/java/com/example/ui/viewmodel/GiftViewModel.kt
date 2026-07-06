@@ -71,7 +71,7 @@ class GiftViewModel(private val repository: GiftRepository) : ViewModel() {
 
     val selectedProduct = MutableStateFlow<GiftProduct?>(null)
 
-    private val _isDarkTheme = MutableStateFlow(false)
+    private val _isDarkTheme = MutableStateFlow(true)
     val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
 
     fun setDarkTheme(enabled: Boolean) {

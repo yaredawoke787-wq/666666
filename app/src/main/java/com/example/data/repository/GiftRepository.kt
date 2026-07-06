@@ -67,7 +67,8 @@ class GiftRepository(private val giftDao: GiftDao) {
                 rating = 4.9f,
                 description = "An absolute masterpiece of craftsmanship. Handcrafted with gold leaf accents and deep black velvet interior lining. A royal gift that symbolizes timeless success, perfect for high-profile business partners or wedding anniversaries.",
                 imageResId = R.drawable.img_luxury_box_1783249841023,
-                category = "Luxury"
+                category = "Luxury",
+                videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
             ),
             GiftProduct(
                 id = 2,
@@ -77,7 +78,8 @@ class GiftRepository(private val giftDao: GiftDao) {
                 rating = 4.9f,
                 description = "Indulge in pure matrimonial romance. Features hand-blown lead-free crystal flutes with custom gold-plated handles, perfectly placed within a high-end silk keepsake carrier box. Designed to capture timeless memories.",
                 imageResId = R.drawable.img_wedding_gift_1783249854737,
-                category = "Wedding"
+                category = "Wedding",
+                videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
             ),
             GiftProduct(
                 id = 3,
@@ -87,7 +89,8 @@ class GiftRepository(private val giftDao: GiftDao) {
                 rating = 4.8f,
                 description = "Celebrate in luxurious elegance. Includes handcrafted gold-dusted artisan chocolate truffles, a premium soy scented candle in a gold metal jar, and a custom laser-engraved maple wood greeting card.",
                 imageResId = R.drawable.img_birthday_gift_1783249866279,
-                category = "Birthday"
+                category = "Birthday",
+                videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
             ),
             GiftProduct(
                 id = 4,
@@ -97,7 +100,8 @@ class GiftRepository(private val giftDao: GiftDao) {
                 rating = 4.9f,
                 description = "Commemorate their monumental academic milestones. Pairing a heavy brass gold-nibbed fountain pen with a premium full-grain double-layered leather portfolio for certificates and digital tablets.",
                 imageResId = R.drawable.img_graduation_gift_1783249879106,
-                category = "Graduation"
+                category = "Graduation",
+                videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
             ),
             GiftProduct(
                 id = 5,
@@ -107,7 +111,8 @@ class GiftRepository(private val giftDao: GiftDao) {
                 rating = 4.9f,
                 description = "For modern visionaries and executive leadership. Includes our flagship minimalist matte black journal, solid brass weighted gel pen, and a matching double-sided high-polish card safe.",
                 imageResId = R.drawable.img_business_gift_1783249891507,
-                category = "Business"
+                category = "Business",
+                videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
             ),
             GiftProduct(
                 id = 6,

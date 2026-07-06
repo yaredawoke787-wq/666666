@@ -14,8 +14,15 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.ui.viewinterop.AndroidView
+import kotlinx.coroutines.delay
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -361,6 +368,20 @@ fun ProductDetailsScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                // Elegant Video Player Table
+                Text(
+                    text = "PRODUCT CINEMATIC SHOWCASE",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 2.sp
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                
+                LuxuryVideoPlayer(product.videoUrl, isDarkTheme)
+
+                Spacer(modifier = Modifier.height(24.dp))
+
                 // Premium details features
                 Text(
                     text = "BESPOKE PACKAGING FEATURES",
@@ -457,5 +478,226 @@ fun FeatureItem(text: String, isDarkTheme: Boolean) {
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
             fontSize = 13.sp
         )
+    }
+}
+
+@Composable
+fun LuxuryVideoPlayer(videoUrl: String?, isDarkTheme: Boolean) {
+    if (videoUrl.isNullOrEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .background(if (isDarkTheme) PremiumGray.copy(alpha = 0.1f) else SleekLightGray.copy(alpha = 0.3f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayCircle,
+                    contentDescription = "Video placeholder",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(48.dp)
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = "Bespoke Showcase Video",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Serif
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Waiting for boutique video link from admin",
+                    color = WarmGray,
+                    fontSize = 11.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+        return
+    }
+
+    val context = LocalContext.current
+    var isPlaying by remember { mutableStateOf(false) }
+    var isMuted by remember { mutableStateOf(false) }
+    var duration by remember { mutableStateOf(0f) }
+    var currentPosition by remember { mutableStateOf(0f) }
+    var isLoading by remember { mutableStateOf(true) }
+    var videoViewInstance by remember { mutableStateOf<android.widget.VideoView?>(null) }
+    var mediaPlayerInstance by remember { mutableStateOf<android.media.MediaPlayer?>(null) }
+
+    LaunchedEffect(isPlaying, videoViewInstance) {
+        if (isPlaying) {
+            while (true) {
+                videoViewInstance?.let {
+                    currentPosition = it.currentPosition.toFloat()
+                    duration = it.duration.toFloat()
+                }
+                delay(200)
+            }
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(230.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(20.dp)
+            )
+            .background(Color.Black),
+        contentAlignment = Alignment.Center
+    ) {
+        AndroidView(
+            factory = { ctx ->
+                android.widget.VideoView(ctx).apply {
+                    setVideoURI(android.net.Uri.parse(videoUrl))
+                    setOnPreparedListener { mp ->
+                        mediaPlayerInstance = mp
+                        mp.isLooping = true
+                        isLoading = false
+                        if (isMuted) {
+                            mp.setVolume(0f, 0f)
+                        } else {
+                            mp.setVolume(1f, 1f)
+                        }
+                        start()
+                        isPlaying = true
+                        duration = mp.duration.toFloat()
+                    }
+                    setOnErrorListener { _, _, _ ->
+                        isLoading = false
+                        true
+                    }
+                }
+            },
+            update = { view ->
+                videoViewInstance = view
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 3.dp,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.4f),
+                            Color.Transparent,
+                            Color.Black.copy(alpha = 0.75f)
+                        )
+                    )
+                )
+        ) {
+            IconButton(
+                onClick = {
+                    isMuted = !isMuted
+                    mediaPlayerInstance?.let {
+                        if (isMuted) it.setVolume(0f, 0f) else it.setVolume(1f, 1f)
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(12.dp)
+                    .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+                    .size(36.dp)
+            ) {
+                Icon(
+                    imageVector = if (isMuted) Icons.Default.VolumeOff else Icons.Default.VolumeUp,
+                    contentDescription = if (isMuted) "Unmute" else "Mute",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+
+            IconButton(
+                onClick = {
+                    videoViewInstance?.let {
+                        if (it.isPlaying) {
+                            it.pause()
+                            isPlaying = false
+                        } else {
+                            it.start()
+                            isPlaying = true
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .background(Color.Black.copy(alpha = 0.6f), CircleShape)
+                    .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.8f), CircleShape)
+                    .size(54.dp)
+            ) {
+                Icon(
+                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    contentDescription = if (isPlaying) "Pause" else "Play",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val progressValue = if (duration > 0f) currentPosition / duration else 0f
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(4.dp)
+                        .background(Color.White.copy(alpha = 0.3f), RoundedCornerShape(2.dp))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(progressValue.coerceIn(0f, 1f))
+                            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(2.dp))
+                    )
+                }
+
+                val currentSecs = (currentPosition / 1000).toInt()
+                val totalSecs = (duration / 1000).toInt()
+                Text(
+                    text = String.format("%02d:%02d", currentSecs / 60, currentSecs % 60),
+                    color = Color.White,
+                    fontSize = 10.sp,
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
 }
