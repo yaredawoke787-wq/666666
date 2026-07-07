@@ -16,5 +16,6 @@ data class GiftProduct(
     val isFavorite: Boolean = false,
     val isInCart: Boolean = false,
     val cartQuantity: Int = 0,
-    val videoUrl: String? = null
+    val videoUrl: String? = null,
+    val imageUrl: String? = null
 )

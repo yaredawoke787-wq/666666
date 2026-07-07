@@ -444,9 +444,8 @@ fun HomeScreen(
                                             .clickable { onProductClick(product.id) }
                                     ) {
                                         // Hero Image background (Elegant Cropping)
-                                        Image(
-                                            painter = painterResource(id = product.imageResId),
-                                            contentDescription = product.title,
+                                        com.example.ui.components.ProductImage(
+                                            product = product,
                                             modifier = Modifier.fillMaxSize(),
                                             contentScale = ContentScale.Crop
                                         )
@@ -827,9 +826,8 @@ fun ProductCard(
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                     .background(Color.White.copy(alpha = if (isDarkTheme) 0.05f else 0.8f))
             ) {
-                Image(
-                    painter = painterResource(id = product.imageResId),
-                    contentDescription = product.title,
+                com.example.ui.components.ProductImage(
+                    product = product,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )

@@ -153,7 +153,17 @@ class MainActivity : ComponentActivity() {
                         }
                         
                         composable("settings") {
-                            SettingsScreen(viewModel = viewModel)
+                            SettingsScreen(
+                                viewModel = viewModel,
+                                onNavigateToAdmin = { navController.navigate("admin") }
+                            )
+                        }
+
+                        composable("admin") {
+                            AdminScreen(
+                                viewModel = viewModel,
+                                onBackClick = { navController.popBackStack() }
+                            )
                         }
                     }
                 }

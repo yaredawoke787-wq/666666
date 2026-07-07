@@ -32,7 +32,10 @@ import com.example.ui.viewmodel.GiftViewModel
 import com.example.ui.localization.TekeLocalization
 
 @Composable
-fun SettingsScreen(viewModel: GiftViewModel) {
+fun SettingsScreen(
+    viewModel: GiftViewModel,
+    onNavigateToAdmin: () -> Unit
+) {
     val context = LocalContext.current
     val isDarkThemeEnabled by viewModel.isDarkTheme.collectAsState()
     val currentLanguage by viewModel.currentLanguage.collectAsState()
@@ -131,6 +134,17 @@ fun SettingsScreen(viewModel: GiftViewModel) {
                 letterSpacing = 2.sp,
                 modifier = Modifier.padding(bottom = 10.dp)
             )
+
+            // Admin App Control
+            SettingsListItem(
+                title = if (currentLanguage == "AM") "ተከ ማን አስተዳዳሪ ፖርታል" else "Teke Man Admin App",
+                subtitle = if (currentLanguage == "AM") "ምርቶችን ለመጨመር እና ለማሻሻል እዚህ ይጫኑ" else "Upload & edit products inside the boutique",
+                icon = Icons.Default.Build,
+                isDarkTheme = isDarkThemeEnabled,
+                onClick = onNavigateToAdmin
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Language picker item
             SettingsListItem(

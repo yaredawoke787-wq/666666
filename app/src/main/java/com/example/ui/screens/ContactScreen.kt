@@ -457,9 +457,8 @@ fun CategoryProductCard(
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                     .background(Color.White.copy(alpha = 0.05f))
             ) {
-                Image(
-                    painter = painterResource(id = product.imageResId),
-                    contentDescription = product.title,
+                com.example.ui.components.ProductImage(
+                    product = product,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )

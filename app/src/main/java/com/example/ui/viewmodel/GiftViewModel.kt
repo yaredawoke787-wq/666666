@@ -16,6 +16,14 @@ class GiftViewModel(private val repository: GiftRepository) : ViewModel() {
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
+    // Unfiltered raw products list for administrative management
+    val allProducts: StateFlow<List<GiftProduct>> = repository.allProducts
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
     // Real-time reactive combination of products, selected category, and search query
     val filteredProducts: StateFlow<List<GiftProduct>> = combine(
         repository.allProducts,
@@ -141,6 +149,21 @@ class GiftViewModel(private val repository: GiftRepository) : ViewModel() {
     fun clearCart() {
         viewModelScope.launch {
             repository.clearCart()
+        }
+    }
+
+    fun addProduct(product: GiftProduct) {
+        viewModelScope.launch {
+            repository.addProduct(product)
+        }
+    }
+
+    fun updateProduct(product: GiftProduct) {
+        viewModelScope.launch {
+            repository.updateProduct(product)
+            if (selectedProduct.value?.id == product.id) {
+                selectedProduct.value = product
+            }
         }
     }
 

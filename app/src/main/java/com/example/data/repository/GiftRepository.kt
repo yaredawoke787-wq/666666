@@ -57,6 +57,14 @@ class GiftRepository(private val giftDao: GiftDao) {
         giftDao.clearCart()
     }
 
+    suspend fun addProduct(product: GiftProduct) {
+        giftDao.insertProducts(listOf(product))
+    }
+
+    suspend fun updateProduct(product: GiftProduct) {
+        giftDao.updateProduct(product)
+    }
+
     companion object {
         private val defaultProducts = listOf(
             GiftProduct(

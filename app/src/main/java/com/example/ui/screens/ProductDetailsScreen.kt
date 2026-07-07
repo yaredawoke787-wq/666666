@@ -106,9 +106,8 @@ fun ProductDetailsScreen(
                         indication = null
                     ) { isZoomed = !isZoomed }
             ) {
-                Image(
-                    painter = painterResource(id = product.imageResId),
-                    contentDescription = product.title,
+                com.example.ui.components.ProductImage(
+                    product = product,
                     modifier = Modifier
                         .fillMaxSize()
                         .scale(imageScale),

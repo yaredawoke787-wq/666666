@@ -295,9 +295,8 @@ fun CartItemRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Mini image thumbnail
-            Image(
-                painter = painterResource(id = product.imageResId),
-                contentDescription = product.title,
+            com.example.ui.components.ProductImage(
+                product = product,
                 modifier = Modifier
                     .size(76.dp)
                     .clip(RoundedCornerShape(12.dp)),
