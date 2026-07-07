@@ -62,6 +62,9 @@ fun SettingsScreen(
                 .statusBarsPadding()
                 .padding(horizontal = 24.dp, vertical = 12.dp)
         ) {
+            // Secret click counter for admin portal access
+            var adminClickCount by remember { mutableStateOf(0) }
+
             Spacer(modifier = Modifier.height(20.dp))
 
             // Brand Header
@@ -80,7 +83,14 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Serif
+                fontFamily = FontFamily.Serif,
+                modifier = Modifier.clickable {
+                    adminClickCount++
+                    if (adminClickCount >= 5) {
+                        adminClickCount = 0
+                        onNavigateToAdmin()
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -134,17 +144,6 @@ fun SettingsScreen(
                 letterSpacing = 2.sp,
                 modifier = Modifier.padding(bottom = 10.dp)
             )
-
-            // Admin App Control
-            SettingsListItem(
-                title = if (currentLanguage == "AM") "ተከ ማን አስተዳዳሪ ፖርታል" else "Teke Man Admin App",
-                subtitle = if (currentLanguage == "AM") "ምርቶችን ለመጨመር እና ለማሻሻል እዚህ ይጫኑ" else "Upload & edit products inside the boutique",
-                icon = Icons.Default.Build,
-                isDarkTheme = isDarkThemeEnabled,
-                onClick = onNavigateToAdmin
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
 
             // Language picker item
             SettingsListItem(
